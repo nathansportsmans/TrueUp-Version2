@@ -1,0 +1,32 @@
+input, button {
+    padding: 20px;
+    margin: 2em;
+    border: solid rgb(13, 110, 253);
+}
+input:hover, button:hover {
+    cursor: pointer;
+    background-color:rgb(13, 110, 253);
+}
+div.col-md-6 {
+    margin-top: 50px;
+}
+h1 {
+    margin: 50px;
+    padding: 20px;
+    font-weight: bold;
+    border: solid black;
+}
+#parentExplanation {
+    text-align: left;
+    padding: 10%;
+}
+#list {
+    padding-bottom: 50px;
+}
+.container-fluid {
+    margin-left: 7%;
+    margin-right: 7%;
+    background-color: rgb(227, 236, 250);
+    box-shadow: 10px 10px 8px #888888;
+    border: solid 1px gray;
+}
