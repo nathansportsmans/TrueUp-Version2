@@ -87,14 +87,29 @@ function compare(json1, json2) {
     // for (let c = 0; c < obj2.length; c++) {
     //     obj2[c].LastName = standardName(obj2[c].LastName);
     // }
-
+    
+    
     let badPeople = [];
     //let nonEmployee = [];
     for (let i = 0; i < obj2.length; i++) {
         //Look at first and Last name in account list (obj2)
-        let tmpFirst = standardName(obj2[i].FirstName);
-        let tmpLast = standardName(obj2[i].LastName);
+        let tmpFirst = "";
+        let tmpLast = "";
+        function splitName(str) {
+            try {
+                let str = obj2[i].Nam;
+                str = str.split(" ");
+                tmpFirst = str[0];
+                tmpLast = str[1];
+            }
+            catch {
+                console.log("Couldn't split one of the names.");
+                tmpLast = str;
+            }
+        }
+        splitName(obj2[i]);
         let alreadyDone = false;
+        let isEmployed = false;
         
         //Check to see if this particular name already got looked at.
         for (let x = 0; x < badPeople.length; x++){
@@ -170,7 +185,7 @@ function compare(json1, json2) {
             }
         }        
     }
-    return badPeople; 
+    return badPeople;
 }
 
 let string1 = "";

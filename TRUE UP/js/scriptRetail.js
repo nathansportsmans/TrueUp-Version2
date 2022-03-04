@@ -1,3 +1,95 @@
+//Exports list as a csv that the user can open up in excel
+function obj1ToCSV(obj) {
+    let names = "";
+
+    //Take care of headers
+    names = names.concat("UserName,Name\n");
+
+    //Take care of rows
+    for (let i = 0; i < obj["Employees"].Name.length; i++) {
+        names = names.concat(obj["Employees"].UserName[i] + "," + obj["Employees"].Name[i] + `\n`);
+    }
+    return names;
+}
+function obj2ToCSV(obj) {
+    let names = "";
+
+    //Take care of headers
+    names = names.concat("UserName,Name,UltiPro ID (That they should have)\n");
+
+    //Take care of rows
+    for (let i = 0; i < obj["notHaveUltipro"].Name.length; i++) {
+        names = names.concat(obj["notHaveUltipro"].UserName[i] + "," + obj["notHaveUltipro"].Name[i] + obj["notHaveUltipro"].CorrectID[i]`\n`);
+    }
+    return names;
+}
+
+
+//Lists the people who shouldn't have accounts in a table. 
+function createTable(userArr, nameArr) {
+    function createTableCell(str) {
+        let cell = document.createElement('td');
+        cell.innerHTML = str;
+        return cell;
+    }
+    let title = document.getElementById('titleOfTable');
+    title.innerHTML = `<h3>Employees that shouldn't have an active Account:</h3>`;
+    let table = document.getElementById('table1');
+    let leftTitle = createTableCell("Username");
+    let rightTitle = createTableCell("Name");
+    let tHead = document.createElement('THEAD');
+    let firstRow = document.createElement('TR');
+    tHead.appendChild(firstRow);
+    firstRow.appendChild(leftTitle);
+    firstRow.appendChild(rightTitle);
+    firstRow.style.fontWeight = 'bold';
+    firstRow.style.fontSize = "xx-large";
+    table.appendChild(firstRow);
+    let tBody = document.createElement('TBODY');
+    for (let i = 0; i < userArr.length; i++) {
+        let row = document.createElement('TR');
+        row.appendChild(createTableCell(nameArr[i]));
+        row.appendChild(createTableCell(userArr[i]));
+        tBody.appendChild(row);
+    }    
+    table.appendChild(tBody);
+}
+
+//lists the people who do not have ultipro ID's in a table
+function createTable2(userArr, nameArr, IDArr) {
+    function createTableCell(str) {
+        let cell = document.createElement('td');
+        cell.innerHTML = str;
+        return cell;
+    }
+    let title = document.getElementById('titleOfUltiTable');
+    title.innerHTML = `<h3>Employees that don't have an ultipro ID:</h3>`;
+    let table = document.getElementById('table2');
+    let leftTitle = createTableCell("Username");
+    let midTitle = createTableCell("Name");
+    let rightTitle = createTableCell("ID to Add");
+    let tHead = document.createElement('THEAD');
+    let firstRow = document.createElement('TR');
+    tHead.appendChild(firstRow);
+    firstRow.appendChild(leftTitle);
+    firstRow.appendChild(midTitle);
+    firstRow.appendChild(rightTitle);
+    firstRow.style.fontWeight = 'bold';
+    firstRow.style.fontSize = "xx-large";
+    table.appendChild(firstRow);
+    let tBody = document.createElement('TBODY');
+    for (let i = 0; i < userArr.length; i++) {
+        let row = document.createElement('TR');
+        row.appendChild(createTableCell(nameArr[i]));
+        row.appendChild(createTableCell(userArr[i]));
+        row.appendChild(createTableCell(IDArr[i]));
+        tBody.appendChild(row);
+    }    
+    table.appendChild(tBody);
+}
+
+
+
 //This will standardize the case of each name. 
 function standardName(str) {
     if ((typeof str) == 'string') {
@@ -13,31 +105,6 @@ function standardName(str) {
         str = str.split();
         str = str[0].charAt(0).toUpperCase() + str[0].slice(1);
         return str;
-    }
-}
-
-//This Function lists an array in HTML
-function listString(arr) {
-    if (arr.length != 0) {
-        let title = document.getElementById('titleOfList');
-        title.innerHTML = `<h3>Employees that shouldn't have an active Account:</h3>`;
-        function createLI(listItem) {
-            let li = document.createElement(`LI`);    
-            li.innerHTML = listItem;
-            return li;
-        }
-        let theList = document.getElementById('list');
-        for (let i = 0; i < arr.length; i++) {
-            theList.appendChild(createLI(arr[i]));
-        }
-        let explanation = document.getElementById('explanation');
-        explanation.innerHTML = `These people may not have first names. This is because they are not listed in the Account Active Employee List with First Names. <br>
-                                All of these accounts ought to be de-activated since they are no longer employed here. <br>
-                                (Their name could also just not be spelled correctly in the Account List. If this is the case please fix the spelling.)`;
-    }
-    else {
-        let div = getElementByID('titleOfList');
-        div.innerHTML = `<h1>Current Account List is Accurate!</h1>`;
     }
 }
 
@@ -83,22 +150,33 @@ function compare(json1, json2) {
     let obj1 = JSON.parse(array1);
     let obj2 = JSON.parse(array2);
 
+
+    //console.log(obj2);
+
     //standardize the case on the last names (redundant)
     // for (let c = 0; c < obj2.length; c++) {
     //     obj2[c].LastName = standardName(obj2[c].LastName);
     // }
 
-    let badPeople = [];
+    let badPeople = {"Employees":{"Name":[],"UserName":[]},"notHaveUltipro":{"Name":[],"UserName":[],"CorrectID":[]}}; 
     //let nonEmployee = [];
     for (let i = 0; i < obj2.length; i++) {
         //Look at first and Last name in oracle list (obj2)
         let tmpFirst = standardName(obj2[i].FIRST_NAME);
         let tmpLast = standardName(obj2[i].LAST_NAME);
+        let tmpUser = obj2[i].USER_NAME;
         let alreadyDone = false;
-        
-        for (let x = 0; x < badPeople.length; x++){
+
+        //Find those who don't have UltiProID's
+        if (obj2[i].UltiProID == "\r") {
+            
+            // for (let d = 0; d < obj1.length; d++) {
+
+            // }
+        }
+        for (let x = 0; x < badPeople["Employees"].length; x++){
             if (!alreadyDone) {
-                if (tmpFirst != badPeople[x].FirstName && tmpLast != badPeople [x]) {
+                if (tmpFirst != badPeople["Employees"][x].FirstName && tmpLast != badPeople["Employees"][x]) {
                     alreadyDone = false;
                 }
                 else {
@@ -106,8 +184,7 @@ function compare(json1, json2) {
                 }
             }
         }
-
-        if(tmpFirst == "") {
+        if (tmpFirst == "") {
             if (!alreadyDone) {
                 // Find that Last Name in the employee List
                 let isEmployed = false;
@@ -115,65 +192,59 @@ function compare(json1, json2) {
                     if (!isEmployed) {
                         if (standardName(obj1[a].LastName) == tmpLast) {
                             isEmployed = true;
-                        }
+                            if (obj2[i].UltiProID == "\r" && obj1[a].LastName != "") {
+                                badPeople["notHaveUltipro"].Name.push(tmpFirst + " " + tmpLast);
+                                badPeople["notHaveUltipro"].UserName.push(tmpUser);
+                                badPeople["notHaveUltipro"].CorrectID.push(obj1[a].EmployeeNumber);
+                            }
+                            // else if(obj2[i].UltiProID == "\r" && obj1[a].LastName == "") {
+                            //     badPeople["notHaveUltipro"].Name.push(tmpFirst + " " + tmpLast);
+                            //     badPeople["notHaveUltipro"].UserName.push(tmpUser);
+                            // }
+                        } 
                     }
                 }
                 if (!isEmployed) {
-                    badPeople.push(tmpFirst + " " + tmpLast);
+                    badPeople["Employees"].Name.push(tmpFirst + " " + tmpLast);
+                    badPeople["Employees"].UserName.push(tmpUser);
                 }
-                // //Find that First and Last name in the Employee list (obj1)
-                // //See if this entry's job is on the allowed job list above
-                // let entryNums = null;
-                // let isGood = false;
-                // for (let u = 0; u < obj1.length; u++) {
-                //     if ((obj1[u].FirstName == tmpFirst) && (obj1[u].LastName == tmpLast)) {
-                //         entryNums = u;
-                //     }
-                //     let okayJob = false;
-                //     for (let y = 0; y < allowedJobs.Oracle[0].Title.length; y++) {
-                //         //if yes: don't add anything to the bad people array
-                //         if (entryNums != null) {
-                //             if (obj1[entryNums].Job == allowedJobs.Oracle[0].Title[y] && !okayJob) {
-                //                 okayJob = true;
-                //                 isGood = true;
-                //             }
-                //         }
-                //     }
-
-
-
-                //     if (!okayJob && entryNums != null) {
-                //         badPeople.push(obj1[entryNums].FirstName + " " + obj1[entryNums].LastName);
-                //         isGood = true;
-                //     }
-                // }
-                // if (!isGood) {
-                //     badPeople.push(tmpFirst + " " + tmpLast);
-                // }
             }
         }
-        else {
+         
+        else if (tmpFirst != "") {
             if (!alreadyDone) {
                 // Find that Last Name in the employee List
                 let isEmployed = false;
                 for (let b = 0; b < obj1.length; b++) {
                     if (!isEmployed) {
-                        if (standardName(obj1[b].LastName) == tmpLast && standardName(obj1[b].FirstName)) {
+                        if (standardName(obj1[b].LastName) == tmpLast && standardName(obj1[b].FirstName) == tmpFirst) {
                             isEmployed = true;
+                            if (obj2[i].UltiProID == "\r" && obj1[b].LastName != "" && obj1[b].FirstName != "") {
+                                badPeople["notHaveUltipro"].Name.push(tmpFirst + " " + tmpLast);
+                                badPeople["notHaveUltipro"].UserName.push(tmpUser);
+                                badPeople["notHaveUltipro"].CorrectID.push(obj1[b].EmployeeNumber);
+                            }
+                            // else if(obj2[i].UltiProID == "\r" && obj1[b].LastName == "" && obj1[b].FirstName == "") {
+                            //     badPeople["notHaveUltipro"].Name.push(tmpFirst + " " + tmpLast);
+                            //     badPeople["notHaveUltipro"].UserName.push(tmpUser);
+                            // }
                         }
                     }
                 }
                 if (!isEmployed) {
-                    badPeople.push(tmpFirst + " " + tmpLast);
+                    badPeople["Employees"].Name.push(tmpFirst + " " + tmpLast);
+                    badPeople["Employees"].UserName.push(tmpUser);
                 }
             }
-        }        
+        }          
     }
     return badPeople; 
 }
 
+
 let string1 = "";
 let string2 = "";
+let employeeObject = {};
 myForm.addEventListener("submit", function (e) {
     e.preventDefault();
     const json1 = document.getElementById("JSONFile1");
@@ -195,6 +266,28 @@ myForm.addEventListener("submit", function (e) {
         //console.log(obj2);
     };
     reader2.readAsText(input2);
-    let list = compare(string1, string2);
-    listString(list);
+    employeeObject = compare(string1, string2);
+//     listString(employeeObject["Employees"]);
+//     listString2(employeeObject["notHaveUltipro"]);
+    createTable(employeeObject["Employees"].Name,  employeeObject["Employees"].UserName);
+    createTable2(employeeObject["notHaveUltipro"].Name, employeeObject["notHaveUltipro"].UserName, employeeObject["notHaveUltipro"].CorrectID);
 });
+document.getElementById('button').addEventListener("click", function(obj) {
+    let names = obj1ToCSV(employeeObject)
+    let link = document.createElement('a');
+    link.download = 'badAccounts_Retail.csv';
+    let blob = new Blob([[names]], {type: "application/json"});
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+
+    let names2 = obj2ToCSV(employeeObject)
+    let link2 = document.createElement('a');
+    link2.download = 'UltiproID_Retail.csv';
+    let blob2 = new Blob([[names2]], {type: "application/json"});
+    link.href = URL.createObjectURL(blob2);
+    link.click();
+    URL.revokeObjectURL(link.href);
+});
+
+

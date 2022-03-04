@@ -1,7 +1,7 @@
 input, button {
     padding: 20px;
     margin: 2em;
-    border: solid rgb(13, 110, 253);
+    border: dotted 2px rgb(13, 110, 253);
 }
 input:hover, button:hover {
     cursor: pointer;
@@ -22,6 +22,7 @@ h1 {
 }
 #list {
     padding-bottom: 50px;
+    border-right: solid black;
 }
 .container-fluid {
     margin-left: 7%;
@@ -30,3 +31,20 @@ h1 {
     box-shadow: 10px 10px 8px #888888;
     border: solid 1px gray;
 }
+td {
+    border:1px solid black;
+}
+#tableCard {
+    text-align: center;
+    box-shadow: 10px 10px 8px #888888;
+    border: 1px solid black;
+    max-width: 600px;
+    margin: 20px;
+}
+#lists {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+
