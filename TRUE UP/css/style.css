@@ -42,8 +42,11 @@ td {
     margin: 20px;
 }
 #lists {
-    display: flex;
+    display: none;
     justify-content: space-evenly;
+}
+#button, #button2 {
+    display: none;
 }
 
 

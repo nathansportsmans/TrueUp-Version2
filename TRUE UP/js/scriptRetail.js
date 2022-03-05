@@ -15,11 +15,11 @@ function obj2ToCSV(obj) {
     let names = "";
 
     //Take care of headers
-    names = names.concat("UserName,Name,UltiPro ID (That they should have)\n");
+    names = names.concat("UserName,Name,UltiPro ID to Add\n");
 
     //Take care of rows
     for (let i = 0; i < obj["notHaveUltipro"].Name.length; i++) {
-        names = names.concat(obj["notHaveUltipro"].UserName[i] + "," + obj["notHaveUltipro"].Name[i] + obj["notHaveUltipro"].CorrectID[i]`\n`);
+        names = names.concat(obj["notHaveUltipro"].UserName[i] + "," + obj["notHaveUltipro"].Name[i] + "," + obj["notHaveUltipro"].CorrectID[i] + `\n`);
     }
     return names;
 }
@@ -247,6 +247,9 @@ let string2 = "";
 let employeeObject = {};
 myForm.addEventListener("submit", function (e) {
     e.preventDefault();
+    document.getElementById('lists').style.display = 'flex';
+    document.getElementById('button').style.display = 'block';
+    document.getElementById('button2').style.display = 'block';
     const json1 = document.getElementById("JSONFile1");
     const json2 = document.getElementById("JSONFile2");
     const input1 = json1.files[0];
@@ -281,13 +284,16 @@ document.getElementById('button').addEventListener("click", function(obj) {
     link.click();
     URL.revokeObjectURL(link.href);
 
+    
+});
+document.getElementById('button2').addEventListener("click", function(obj) {
     let names2 = obj2ToCSV(employeeObject)
     let link2 = document.createElement('a');
     link2.download = 'UltiproID_Retail.csv';
     let blob2 = new Blob([[names2]], {type: "application/json"});
-    link.href = URL.createObjectURL(blob2);
-    link.click();
+    link2.href = URL.createObjectURL(blob2);
+    link2.click();
     URL.revokeObjectURL(link.href);
-});
+})
 
 
